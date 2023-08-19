@@ -23,8 +23,8 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add reachable_ips.txt bind_config.txt
-          git commit -m "Update reachable_ips.txt and bind_config.txt"
+          git add whole_ips.txt reachable_ips.txt simple_reachable_ips.txt bind_config.txt
+          git commit -m "Update whole_ips.txt reachable_ips.txt simple_reachable_ips.txt bind_config.txt"
           git push
       
       - name: Upload Result
@@ -32,5 +32,7 @@ jobs:
         with:
           name: results
           path: |
+            whole_ips.txt
             reachable_ips.txt
+            simple_reachable_ips.txt
             bind_config.txt

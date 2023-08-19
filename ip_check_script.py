@@ -62,17 +62,17 @@ if __name__ == '__main__':
     # Sort reachable IPs
     reachable_ips = sorted(reachable_ips)
 
+    # Save selected IPs
+    with open('reachable_ips.txt', 'w') as file:
+        for ip in reachable_ips:
+            file.write(str(ip) + '\n')
+
     selected_ips = []
     while reachable_ips:
         first_ip = reachable_ips.pop(0)
         selected_ips.append(first_ip)
         subnet_20 = ipaddress.ip_network(first_ip).supernet(new_prefix=20)
         reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_20)]
-
-    # Save selected IPs
-    with open('reachable_ips.txt', 'w') as file:
-        for ip in reachable_ips:
-            file.write(str(ip) + '\n')
 
     with open('simple_reachable_ips.txt', 'w') as file:
         for ip in selected_ips:

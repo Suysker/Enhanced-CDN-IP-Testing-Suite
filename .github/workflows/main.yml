@@ -15,7 +15,15 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
           python3 ./ip_check_script.py
-      
+          
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add reachable_ips.txt
+          git commit -m "Update reachable_ips.txt"
+          git push
+          
       - name: Upload Result
         uses: actions/upload-artifact@v3
         with:

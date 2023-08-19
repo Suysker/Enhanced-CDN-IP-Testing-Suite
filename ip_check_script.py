@@ -2,6 +2,8 @@ import subprocess
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+urlprefix = ".ip.suyskser.top"
+
 def get_subnets_24(subnet):
     """Convert a subnet to multiple /24 subnets."""
     network = ipaddress.ip_network(subnet, strict=False)
@@ -29,7 +31,7 @@ def first_reachable_ip_in_subnet(subnet):
 def generate_domain(ip_address):
     parts = str(ip_address).split(".")
     parts[-1] = "0"  # 把最后一个部分替换为 "0"
-    return "-".join(parts) + ".ip.hangover.tk"
+    return "-".join(parts) + urlprefix
 
 if __name__ == '__main__':
     with open('ip.txt', 'r') as file:

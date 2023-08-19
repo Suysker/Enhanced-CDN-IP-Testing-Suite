@@ -11,7 +11,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GITHUB_TOKEN to get push access.
+          token: ${{ secrets.IP_Check_PAT }}  # Use the GITHUB_TOKEN to get push access.
       
       - name: Convert IPs and Check availability
         run: |

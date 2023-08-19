@@ -12,6 +12,12 @@ def is_ip_reachable(ip):
     result = subprocess.run(["tcptraceroute", "-f", "255", "-m", "255", "-q", "1", str(ip)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return "Destination unreachable" not in result.stdout.decode()
 
+def check_subnet(subnet):
+    ip = ipaddress.ip_network(subnet, strict=False).network_address
+    if is_ip_reachable(ip):
+        return subnet
+    return None
+
 if __name__ == '__main__':
     with open('ip.txt', 'r') as file:
         subnets = file.readlines()

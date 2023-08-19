@@ -58,12 +58,12 @@ if __name__ == '__main__':
             subnet = future_to_subnet[future]
             ip, colo = future.result()
             if ip and colo:
-                22_subnet = ipaddress.ip_network(ip).supernet(new_prefix=22)
-                if 22_subnet not in reachable_ips_and_colo:
-                    reachable_ips_and_colo[22_subnet] = (ip, colo)
-                elif reachable_ips_and_colo[22_subnet][1] != colo:
+                subnet_22 = ipaddress.ip_network(ip).supernet(new_prefix=22)
+                if subnet_22 not in reachable_ips_and_colo:
+                    reachable_ips_and_colo[subnet_22] = (ip, colo)
+                elif reachable_ips_and_colo[subnet_22][1] != colo:
                     # Replace if different colo
-                    reachable_ips_and_colo[22_subnet] = (ip, colo)
+                    reachable_ips_and_colo[subnet_22] = (ip, colo)
             print(f"Progress: {completed}/{total} subnets checked")
 
     # Save reachable IPs

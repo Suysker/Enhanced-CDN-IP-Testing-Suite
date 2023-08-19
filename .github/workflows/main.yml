@@ -11,20 +11,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Install tcping
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y tcptraceroute
-          echo 'tcping() { /usr/sbin/tcptraceroute -f 255 -m 255 -q 1 "$@"; }' | sudo tee -a /etc/bash.bashrc
-          source /etc/bash.bashrc
-      
       - name: Convert IPs and Check availability
         run: |
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
           python3 ./ip_check_script.py
       
       - name: Upload Result
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: reachable-ips
           path: reachable_ips.txt

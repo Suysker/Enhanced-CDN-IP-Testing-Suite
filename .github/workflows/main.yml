@@ -1,7 +1,7 @@
 name: IP Check Action
 
 on:
-  workflow_dispatch:  # 这允许手动触发GitHub Action
+  workflow_dispatch:
 
 jobs:
   check_ips:
@@ -10,12 +10,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GITHUB_TOKEN to get push access.
       
       - name: Convert IPs and Check availability
         run: |
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
           python3 ./ip_check_script.py
-          
+      
+      # 下面的步骤用于提交和推送 reachable_ips.txt 文件的更新到仓库
       - name: Commit and push changes
         run: |
           git config user.name "GitHub Action"
@@ -23,7 +26,7 @@ jobs:
           git add reachable_ips.txt
           git commit -m "Update reachable_ips.txt"
           git push
-          
+      
       - name: Upload Result
         uses: actions/upload-artifact@v3
         with:

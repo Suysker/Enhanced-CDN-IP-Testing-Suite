@@ -18,17 +18,19 @@ jobs:
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
           python3 ./ip_check_script.py
       
-      # 下面的步骤用于提交和推送 reachable_ips.txt 文件的更新到仓库
+      # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库
       - name: Commit and push changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add reachable_ips.txt
-          git commit -m "Update reachable_ips.txt"
+          git add reachable_ips.txt bind_config.txt
+          git commit -m "Update reachable_ips.txt and bind_config.txt"
           git push
       
       - name: Upload Result
         uses: actions/upload-artifact@v3
         with:
-          name: reachable-ips
-          path: reachable_ips.txt
+          name: results
+          path: |
+            reachable_ips.txt
+            bind_config.txt

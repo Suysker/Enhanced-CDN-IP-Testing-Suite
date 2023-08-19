@@ -1,0 +1,42 @@
+name: Update DNS Records
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update_dns:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Get BIND config from Cloudflare
+        env:
+          ZONE_IDENTIFIER: ${{ secrets.ZONE_IDENTIFIER }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_EMAIL: ${{ secrets.CF_EMAIL }}
+        run: |
+          curl --request GET \
+            --url https://api.cloudflare.com/client/v4/zones/$ZONE_IDENTIFIER/dns_records/export \
+            --header 'Content-Type: application/json' \
+            --header "X-Auth-Email: $CF_EMAIL" \
+            --header "Authorization: Bearer $CF_API_TOKEN" > current_bind_config.txt
+
+      - name: Process BIND configs and upload to Cloudflare
+        env:
+          ZONE_IDENTIFIER: ${{ secrets.ZONE_IDENTIFIER }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_EMAIL: ${{ secrets.CF_EMAIL }}
+        run: |
+          # Filter and combine BIND configs
+          grep -v 'ip.suysker.top' current_bind_config.txt > temp_bind.txt
+          cat bind_config.txt >> temp_bind.txt
+          
+          # Upload the combined BIND config
+          curl --request POST \
+            --url https://api.cloudflare.com/client/v4/zones/$ZONE_IDENTIFIER/dns_records/import \
+            --header 'Content-Type: multipart/form-data' \
+            --header "X-Auth-Email: $CF_EMAIL" \
+            --header "Authorization: Bearer $CF_API_TOKEN" \
+            --form "file=@temp_bind.txt"

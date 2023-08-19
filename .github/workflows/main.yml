@@ -1,9 +1,7 @@
 name: IP Check Action
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:  # 这允许手动触发GitHub Action
 
 jobs:
   check_ips:

@@ -1,0 +1,19 @@
+name: IP Check Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check_ips:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Convert IPs and Check availability
+        run: |
+          curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
+          python3 ./ip_check_script.py

@@ -17,16 +17,8 @@ def is_ip_reachable(ip):
         return False
 
 def first_reachable_ip_in_subnet(subnet):
-    consecutive_failures = 0
-    for i in range(0, 256, 25):
-        ip = ipaddress.ip_address(f"{subnet.network_address + i}")
-        if is_ip_reachable(ip):
-            return ip
-        else:
-            consecutive_failures += 1
-            if consecutive_failures >= 10:
-                break
-    return None
+    ip = ipaddress.ip_address(subnet.network_address)
+    return ip if is_ip_reachable(ip) else None
 
 def generate_domain(ip_address):
     parts = str(ip_address).split(".")
@@ -57,6 +49,16 @@ if __name__ == '__main__':
                 reachable_ips.append(result)
             print(f"Progress: {completed}/{total} subnets checked")
 
+    # Save all subnets /24
+    with open('whole_ips.txt', 'w') as file:
+        for subnet in all_subnets_24:
+            file.write(str(subnet.network_address) + '\n')
+
+    with open('bind_config.txt', 'w') as file:
+        for ip in all_subnets_24:
+            domain = generate_domain(ip.network_address)
+            file.write(f"{domain}. 1 IN A {ip.network_address}\n")
+
     # Sort reachable IPs
     reachable_ips = sorted(reachable_ips)
 
@@ -64,18 +66,16 @@ if __name__ == '__main__':
     while reachable_ips:
         first_ip = reachable_ips.pop(0)
         selected_ips.append(first_ip)
-        subnet_22 = ipaddress.ip_network(first_ip).supernet(new_prefix=22)
-        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_22)]
+        subnet_20 = ipaddress.ip_network(first_ip).supernet(new_prefix=20)
+        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_20)]
 
     # Save selected IPs
     with open('reachable_ips.txt', 'w') as file:
+        for ip in reachable_ips:
+            file.write(str(ip) + '\n')
+
+    with open('simple_reachable_ips.txt', 'w') as file:
         for ip in selected_ips:
             file.write(str(ip) + '\n')
-    
-    # Save corresponding domain names with IPs
-    with open('bind_config.txt', 'w') as file:
-        for ip in selected_ips:
-            domain = generate_domain(ip)
-            file.write(f"{domain}. 1 IN A {ip}\n")
 
     print("Done!")

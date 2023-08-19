@@ -9,35 +9,28 @@ def get_subnets_24(subnet):
     network = ipaddress.ip_network(subnet, strict=False)
     return list(network.subnets(new_prefix=24))
 
-def get_colo_if_reachable(ip):
+def is_ip_reachable(ip):
     try:
-        result = subprocess.run(["curl", "-s", f"http://{ip}/cdn-cgi/trace"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
-        response = result.stdout.decode().strip()
-        
-        if "200" in response:  # 基于HTTP 200状态码检查IP是否可访问
-            for line in response.split("\n"):
-                if line.startswith("colo="):
-                    return ip, line.split("=")[1]
-        return None, None
+        result = subprocess.run(["curl", "-o", "/dev/null", "-s", "-w", "%{http_code}", f"http://{ip}/cdn-cgi/trace"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        return result.stdout.decode().strip() == "200"
     except subprocess.TimeoutExpired:
-        return None, None
+        return False
 
 def first_reachable_ip_in_subnet(subnet):
     consecutive_failures = 0
     for i in range(0, 256, 25):
         ip = ipaddress.ip_address(f"{subnet.network_address + i}")
-        ip_result, colo = get_colo_if_reachable(ip)
-        if ip_result:
-            return ip_result, colo
+        if is_ip_reachable(ip):
+            return ip
         else:
             consecutive_failures += 1
             if consecutive_failures >= 10:
                 break
-    return None, None
+    return None
 
 def generate_domain(ip_address):
     parts = str(ip_address).split(".")
-    parts[-1] = "0"  # 把最后一个部分替换为 "0"
+    parts[-1] = "0"
     return "-".join(parts) + urlprefix
 
 if __name__ == '__main__':
@@ -50,7 +43,7 @@ if __name__ == '__main__':
         for new_subnet in get_subnets_24(subnet):
             all_subnets_24.append(new_subnet)
 
-    reachable_ips_colos = {}
+    reachable_ips = []
     total = len(all_subnets_24)
     completed = 0
 
@@ -59,19 +52,29 @@ if __name__ == '__main__':
         for future in as_completed(future_to_subnet):
             completed += 1
             subnet = future_to_subnet[future]
-            ip, colo = future.result()
-            if ip:
-                reachable_ips_colos[ip] = colo
+            result = future.result()
+            if result:
+                reachable_ips.append(result)
             print(f"Progress: {completed}/{total} subnets checked")
 
-    # Save reachable IPs
+    # Sort reachable IPs
+    reachable_ips = sorted(reachable_ips)
+
+    selected_ips = []
+    while reachable_ips:
+        first_ip = reachable_ips.pop(0)
+        selected_ips.append(first_ip)
+        subnet_22 = ipaddress.ip_network(first_ip).supernet(new_prefix=22)
+        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_22)]
+
+    # Save selected IPs
     with open('reachable_ips.txt', 'w') as file:
-        for ip, colo in reachable_ips_colos.items():
-            file.write(f"{ip} - {colo}\n")
+        for ip in selected_ips:
+            file.write(str(ip) + '\n')
     
     # Save corresponding domain names with IPs
     with open('bind_config.txt', 'w') as file:
-        for ip in reachable_ips_colos.keys():
+        for ip in selected_ips:
             domain = generate_domain(ip)
             file.write(f"{domain}. 1 IN A {ip}\n")
 

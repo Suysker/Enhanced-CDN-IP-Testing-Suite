@@ -2,6 +2,11 @@ import subprocess
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+def get_subnets_24(subnet):
+    """Convert a subnet to multiple /24 subnets."""
+    network = ipaddress.ip_network(subnet, strict=False)
+    return list(network.subnets(new_prefix=24))
+
 def is_ip_reachable(ip):
     result = subprocess.run(["tcptraceroute", "-f", "255", "-m", "255", "-q", "1", str(ip)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return "Destination unreachable" not in result.stdout.decode()

@@ -7,9 +7,9 @@ def get_subnets_24(subnet):
         yield subnet
 
 def is_ip_reachable(ip):
-    # 使用tcping命令来检查IP的可达性，需要确保tcping已经安装
-    result = subprocess.run(["tcping", "-t", "1", str(ip)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return result.returncode == 0
+    # 使用tcptraceroute命令来检查IP的可达性
+    result = subprocess.run(["tcptraceroute", "-f", "255", "-m", "255", "-q", "1", str(ip)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return "Destination unreachable" not in result.stdout.decode()
 
 if __name__ == '__main__':
     with open('ip.txt', 'r') as file:

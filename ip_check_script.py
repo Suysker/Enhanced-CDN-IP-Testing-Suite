@@ -1,4 +1,4 @@
-import requests
+import subprocess
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -9,9 +9,9 @@ def get_subnets_24(subnet):
 
 def is_ip_reachable(ip):
     try:
-        response = requests.get(f'http://{ip}/cdn-cgi/trace', timeout=2)
-        return response.status_code == 200
-    except requests.RequestException:
+        result = subprocess.run(["curl", "-o", "/dev/null", "-s", "-w", "%{http_code}", f"http://{ip}/cdn-cgi/trace"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        return result.stdout.decode().strip() == "200"
+    except subprocess.TimeoutExpired:
         return False
 
 def first_reachable_ip_in_subnet(subnet):
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     total = len(all_subnets_24)
     completed = 0
 
-    with ThreadPoolExecutor(max_workers=50) as executor:
+    with ThreadPoolExecutor(max_workers=128) as executor:
         future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_24)}
         for future in as_completed(future_to_subnet):
             completed += 1

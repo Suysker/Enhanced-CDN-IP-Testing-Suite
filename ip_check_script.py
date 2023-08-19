@@ -26,6 +26,11 @@ def first_reachable_ip_in_subnet(subnet):
                 break
     return None
 
+def generate_domain(ip_address):
+    parts = str(ip_address).split(".")
+    parts[-1] = "0"  # 把最后一个部分替换为 "0"
+    return "-".join(parts) + ".ip.hangover.tk"
+
 if __name__ == '__main__':
     with open('ip.txt', 'r') as file:
         subnets = file.readlines()
@@ -50,8 +55,15 @@ if __name__ == '__main__':
                 reachable_ips.append(result)
             print(f"Progress: {completed}/{total} subnets checked")
 
+    # Save reachable IPs
     with open('reachable_ips.txt', 'w') as file:
         for ip in reachable_ips:
             file.write(str(ip) + '\n')
+    
+    # Save corresponding domain names with IPs
+    with open('bind_config.txt', 'w') as file:
+        for ip in reachable_ips:
+            domain = generate_domain(ip)
+            file.write(f"{domain}. 1 IN A {ip}\n")
 
     print("Done!")

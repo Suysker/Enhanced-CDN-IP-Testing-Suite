@@ -22,3 +22,9 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
           python3 ./ip_check_script.py
+      
+      - name: Upload Result
+        uses: actions/upload-artifact@v2
+        with:
+          name: reachable-ips
+          path: reachable_ips.txt

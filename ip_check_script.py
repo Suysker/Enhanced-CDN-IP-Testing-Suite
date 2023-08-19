@@ -2,7 +2,7 @@ import subprocess
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-urlprefix = ".ip.suyskser.top"
+urlprefix = ".ip"
 
 def get_subnets_24(subnet):
     """Convert a subnet to multiple /24 subnets."""

@@ -21,9 +21,15 @@ def first_reachable_ip_in_subnet(subnet):
     return ip if is_ip_reachable(ip) else None
 
 def generate_domain(ip_address):
-    parts = str(ip_address).split(":")
+    address_str = str(ip_address)
+    # 检测双冒号并进行处理
+    if "::" in address_str:
+        address_str = address_str.replace("::", ":")
+        parts = address_str.rstrip(":").split(":")
+    else:
+        parts = address_str.split(":")
+    # 过滤掉空字符串
     return '-'.join(parts) + urlprefix
-
 
 if __name__ == '__main__':
     with open('ipv6.txt', 'r') as file:

@@ -13,6 +13,15 @@ jobs:
         with:
           token: ${{ secrets.IP_Check_PAT }}  # Use the GITHUB_TOKEN to get push access.
 
+      - name: Check GitHub Action IPv6 Support
+        run: |
+          if ping6 -c 1 2001:4860:4860::8888; then
+            echo "GitHub Action environment supports IPv6."
+          else
+            echo "GitHub Action environment does not support IPv6."
+            exit 1
+          fi
+
       - name: Convert IPv6s and Check availability
         run: |
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt -o ipv6.txt

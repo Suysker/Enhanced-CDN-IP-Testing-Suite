@@ -20,11 +20,6 @@ def first_reachable_ip_in_subnet(subnet):
     ip = ipaddress.ip_address(subnet.network_address)
     return ip if is_ip_reachable(ip) else None
 
-def generate_domain(ip_address):
-    parts = str(ip_address).split(":")
-    return '-'.join(parts) + urlprefix
-
-
 if __name__ == '__main__':
     with open('ipv6_.txt', 'r') as file:
         base_subnets = file.readlines()

@@ -38,12 +38,12 @@ jobs:
 
       - name: Convert IPv6s and Check availability
         run: |
-          curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt -o ipv6.txt
+          curl -s https://www.cloudflare.com/ips-v6 -o ipv6.txt
           python3 ./ipv6_check_script.py
       
       - name: Convert IPv4s and Check availability
         run: |
-          curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
+          curl -s https://www.cloudflare.com/ips-v4 -o ip.txt
           python3 ./ipv4_check_script.py
       
       # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库

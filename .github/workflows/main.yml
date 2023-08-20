@@ -13,6 +13,12 @@ jobs:
         with:
           token: ${{ secrets.IP_Check_PAT }}  # Use the GITHUB_TOKEN to get push access.
 
+      - name: Install Cloudflare WARP
+        run: |
+          apt install cloudflare-warp
+          warp-cli register
+          warp-cli connect
+
       - name: Check GitHub Action IPv6 Support
         run: |
           if ping6 -c 1 2001:4860:4860::8888; then

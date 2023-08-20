@@ -1,4 +1,4 @@
-name: IP Check Action
+name: IPV6 GENERATE
 
 on:
   workflow_dispatch:

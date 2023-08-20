@@ -11,7 +11,7 @@ def get_subnets_48(subnet):
 
 def is_ip_reachable(ip):
     try:
-        result = subprocess.run(["curl", "-o", "/dev/null", "-s", "-w", "%{http_code}", f"http://[{ip}]/cdn-cgi/trace"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        result = subprocess.run(["curl", "--interface", "wgcf", "-o", "/dev/null", "-s", "-w", "%{http_code}", f"http://[{ip}]/cdn-cgi/trace"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
         return result.stdout.decode().strip() == "200"
     except subprocess.TimeoutExpired:
         return False

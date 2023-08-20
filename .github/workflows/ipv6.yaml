@@ -37,7 +37,7 @@ jobs:
 
       - name: Convert IPv6s and Check availability
         run: |
-          curl -s https://www.cloudflare.com/ips-v6 -o ipv6.txt
+          curl -s https://www.cloudflare.com/ips-v6 -o ipv6_.txt
           python3 ./ipv6_scan.py
       
       # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库
@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add ipv6_.txt
+          git add ipv6.txt
           git commit -m "Update ipv6_.txt"
           git push
       
@@ -54,4 +54,4 @@ jobs:
         with:
           name: results
           path: |
-            ipv6_.txt
+            ipv6.txt

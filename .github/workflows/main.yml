@@ -20,7 +20,7 @@ jobs:
           sudo mv wgcf /usr/local/bin/wgcf
           wgcf register --accept-tos
           wgcf generate
-          sudo apt install wireguard
+          sudo apt install wireguard resolvconf
           sudo cp wgcf-profile.conf /etc/wireguard/wgcf.conf
           sudo wg-quick up wgcf
 

@@ -35,13 +35,18 @@ def hierarchical_query(subnet):
         for s in subnets_to_check:
             new_subnets.extend(list(s.subnets(new_prefix=current_prefix)))
 
+        print(f"Checking subnet: {new_subnets[0]}")  # Add this line for debugging
+
         if is_ip_reachable(new_subnets[0].network_address):
+            print(f"Subnet {new_subnets[0]} is reachable")  # Add this line for debugging
             if current_prefix == 56:
                 return new_subnets
             subnets_to_check = new_subnets
         else:
+            print(f"Subnet {new_subnets[0]} is NOT reachable, stopping search")  # Add this line for debugging
             return []
     return []
+
 
 if __name__ == '__main__':
     with open('ipv6.txt', 'r') as file:

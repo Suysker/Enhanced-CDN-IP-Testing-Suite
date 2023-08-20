@@ -16,14 +16,16 @@ jobs:
       - name: Convert IPs and Check availability
         run: |
           curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ip.txt -o ip.txt
-          python3 ./ip_check_script.py
+          curl -s https://raw.githubusercontent.com/XIU2/CloudflareSpeedTest/master/ipv6.txt -o ipv6.txt
+          python3 ./ipv4_check_script.py
+          python3 ./ipv6_check_script.py
       
       # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库
       - name: Commit and push changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add whole_ips.txt reachable_ips.txt simple_reachable_ips.txt bind_config.txt
+          git add whole_ips.txt reachable_ips.txt simple_reachable_ips.txt bind_config.txt ipv6_whole_ips.txt ipv6_reachable_ips.txt ipv6_simple_reachable_ips.txt ipv6_bind_config.txt
           git commit -m "Update whole_ips.txt reachable_ips.txt simple_reachable_ips.txt bind_config.txt"
           git push
       
@@ -36,3 +38,7 @@ jobs:
             reachable_ips.txt
             simple_reachable_ips.txt
             bind_config.txt
+            ipv6_whole_ips.txt
+            ipv6_reachable_ips.txt
+            ipv6_simple_reachable_ips.txt
+            ipv6_bind_config.txt

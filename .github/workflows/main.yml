@@ -20,8 +20,7 @@ jobs:
           echo "deb https://pkg.cloudflareclient.com/ `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/cloudflare-main.list
           sudo apt update
           sudo apt install -y cloudflare-warp
-          warp-cli --accept-tos
-          warp-cli register
+          warp-cli --accept-tos register
           warp-cli connect
 
       - name: Check GitHub Action IPv6 Support

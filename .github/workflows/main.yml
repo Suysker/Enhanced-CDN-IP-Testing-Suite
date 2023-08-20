@@ -19,9 +19,9 @@ jobs:
           curl -sSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo apt-key add -
           echo "deb https://pkg.cloudflareclient.com/ `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/cloudflare-main.list
           sudo apt update
-          sudo apt install warp-cli
-          warp-cli register
-          warp-cli connect
+          sudo apt install cloudflare-warp
+          sudo wgcf --accept-tos register
+          sudo warp-cli --accept-tos connect
 
       - name: Check GitHub Action IPv6 Support
         run: |

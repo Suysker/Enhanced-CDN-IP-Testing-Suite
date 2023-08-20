@@ -15,13 +15,12 @@ jobs:
 
       - name: Install Cloudflare WARP
         run: |
-          sudo apt install -y apt-transport-https curl
-          curl -sSL https://pkg.cloudflareclient.com/pubkey.gpg | sudo apt-key add -
-          echo "deb https://pkg.cloudflareclient.com/ `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/cloudflare-main.list
-          sudo apt update
-          sudo apt install cloudflare-warp
-          sudo warp-cli --accept-tos register
-          sudo warp-cli --accept-tos connect
+          wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v2.2.18/wgcf_2.2.18_linux_amd64
+          chmod +x wgcf
+          sudo mv wgcf /usr/local/bin/wgcf
+          wgcf register
+          wgcf generate
+          sudo wg-quick up wgcf
 
       - name: Check GitHub Action IPv6 Support
         run: |

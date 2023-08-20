@@ -20,6 +20,8 @@ jobs:
           sudo mv wgcf /usr/local/bin/wgcf
           wgcf register --accept-tos
           wgcf generate
+          sudo apt install wireguard
+          sudo cp wgcf-profile.conf /etc/wireguard/wgcf.conf
           sudo wg-quick up wgcf
 
       - name: Check GitHub Action IPv6 Support

@@ -54,6 +54,6 @@ if __name__ == '__main__':
     # Save selected IPs
     with open('ipv6.txt', 'w') as file:
         for ip in reachable_ips:
-            file.write(str(ip) + '\n')
+            file.write(str(ip) + '/48' + '\n')
 
     print("Done!")

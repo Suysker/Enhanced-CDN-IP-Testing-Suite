@@ -15,7 +15,7 @@ jobs:
 
       - name: Install Cloudflare WARP
         run: |
-          apt install cloudflare-warp
+          sudo apt install cloudflare-warp
           warp-cli register
           warp-cli connect
 

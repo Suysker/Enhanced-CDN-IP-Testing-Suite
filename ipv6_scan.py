@@ -26,7 +26,7 @@ def generate_domain(ip_address):
 
 
 if __name__ == '__main__':
-    with open('ipv6.txt', 'r') as file:
+    with open('ipv6_.txt', 'r') as file:
         base_subnets = file.readlines()
 
     all_subnets_48 = []
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     reachable_ips = sorted(reachable_ips)
 
     # Save selected IPs
-    with open('ipv6_.txt', 'w') as file:
+    with open('ipv6.txt', 'w') as file:
         for ip in reachable_ips:
             file.write(str(ip) + '\n')
 

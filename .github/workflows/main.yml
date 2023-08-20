@@ -19,7 +19,7 @@ jobs:
           chmod +x wgcf
           sudo mv wgcf /usr/local/bin/wgcf
           wgcf register --accept-tos
-          wgcf generate --accept-tos
+          wgcf generate
           sudo wg-quick up wgcf
 
       - name: Check GitHub Action IPv6 Support

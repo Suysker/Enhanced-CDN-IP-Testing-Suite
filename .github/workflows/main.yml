@@ -20,10 +20,7 @@ jobs:
           echo "deb https://pkg.cloudflareclient.com/ `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/cloudflare-main.list
           sudo apt update
           sudo apt install cloudflare-warp
-          wget https://github.com/ViRb3/wgcf/releases/download/v2.2.18/wgcf_2.2.18_linux_amd64
-          chmod +x wgcf_2.2.18_linux_amd64
-          sudo mv wgcf_2.2.18_linux_amd64 /usr/local/bin/wgcf
-          sudo wgcf --accept-tos register
+          sudo warp-cli --accept-tos register
           sudo warp-cli --accept-tos connect
 
       - name: Check GitHub Action IPv6 Support

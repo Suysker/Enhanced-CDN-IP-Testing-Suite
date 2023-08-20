@@ -18,8 +18,8 @@ jobs:
           wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v2.2.18/wgcf_2.2.18_linux_amd64
           chmod +x wgcf
           sudo mv wgcf /usr/local/bin/wgcf
-          wgcf register
-          wgcf generate
+          wgcf register --accept-tos
+          wgcf generate --accept-tos
           sudo wg-quick up wgcf
 
       - name: Check GitHub Action IPv6 Support

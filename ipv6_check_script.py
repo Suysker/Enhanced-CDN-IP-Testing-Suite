@@ -4,10 +4,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 urlprefix = ".ip"
 
-def get_subnets_48(subnet):
-    """Convert a subnet to multiple /48 subnets."""
+def get_subnets_52(subnet):
+    """Convert a subnet to multiple /52 subnets."""
     network = ipaddress.ip_network(subnet, strict=False)
-    return list(network.subnets(new_prefix=48))
+    return list(network.subnets(new_prefix=52))
 
 def is_ip_reachable(ip):
     try:
@@ -29,17 +29,17 @@ if __name__ == '__main__':
     with open('ipv6.txt', 'r') as file:
         base_subnets = file.readlines()
 
-    all_subnets_48 = []
+    all_subnets_52 = []
     for subnet in base_subnets:
         subnet = subnet.strip()
-        all_subnets_48.extend(get_subnets_48(subnet))
+        all_subnets_52.extend(get_subnets_52(subnet))
 
     reachable_ips = []
-    total = len(all_subnets_48)
+    total = len(all_subnets_52)
     completed = 0
 
     with ThreadPoolExecutor(max_workers=1024) as executor:
-        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_48)}
+        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_52)}
         for future in as_completed(future_to_subnet):
             completed += 1
             subnet = future_to_subnet[future]
@@ -48,13 +48,13 @@ if __name__ == '__main__':
                 reachable_ips.append(result)
             print(f"Progress: {completed}/{total} subnets checked")
 
-    # Save all subnets /48
+    # Save all subnets /52
     with open('ipv6_whole_ips.txt', 'w') as file:
-        for subnet in all_subnets_48:
+        for subnet in all_subnets_52:
             file.write(str(subnet.network_address) + '\n')
 
     with open('ipv6_bind_config.txt', 'w') as file:
-        for ip in all_subnets_48:
+        for ip in all_subnets_52:
             domain = generate_domain(ip.network_address)
             file.write(f"{domain}. 1 IN AAAA {ip.network_address}\n")
 
@@ -70,8 +70,8 @@ if __name__ == '__main__':
     while reachable_ips:
         first_ip = reachable_ips.pop(0)
         selected_ips.append(first_ip)
-        subnet_44 = ipaddress.ip_network(first_ip).supernet(new_prefix=44)
-        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_44)]
+        subnet_48 = ipaddress.ip_network(first_ip).supernet(new_prefix=48)
+        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_48)]
 
     with open('ipv6_simple_reachable_ips.txt', 'w') as file:
         for ip in selected_ips:

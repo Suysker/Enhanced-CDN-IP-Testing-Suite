@@ -29,7 +29,7 @@ jobs:
 
       - name: Check GitHub Action IPv6 Support
         run: |
-          if ping6 -c 1 2001:4860:4860::8888; then
+          if ping6 -c 1 2001:4860:4860::8888 -I wgcf; then
             echo "GitHub Action environment supports IPv6."
           else
             echo "GitHub Action environment does not support IPv6."

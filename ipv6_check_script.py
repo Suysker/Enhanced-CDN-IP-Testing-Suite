@@ -50,7 +50,7 @@ if __name__ == '__main__':
     all_subnets_56 = []
     for subnet in base_subnets:
         subnet = subnet.strip()
-        all_subnets_56.extend(get_subnets_56(subnet))
+        all_subnets_56.extend(hierarchical_query(subnet))
 
     reachable_ips = []
     total = len(all_subnets_56)

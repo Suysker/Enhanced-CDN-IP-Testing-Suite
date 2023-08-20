@@ -22,7 +22,6 @@ def first_reachable_ip_in_subnet(subnet):
 
 def generate_domain(ip_address):
     parts = str(ip_address).split(".")
-    parts[-1] = "0"
     return "-".join(parts) + urlprefix
 
 if __name__ == '__main__':

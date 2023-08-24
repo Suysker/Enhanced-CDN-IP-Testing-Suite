@@ -14,7 +14,7 @@ def generate_domain(ip_address):
     return "-".join(parts) + ".ip"
 
 if __name__ == '__main__':
-    with open('ip.txt', 'r') as file:
+    with open('/Gcore/ip.txt', 'r') as file:
         ips = [ipaddress.ip_network(ip.strip()) for ip in file.readlines()]
 
     # 合并 /32 到 /24 网段

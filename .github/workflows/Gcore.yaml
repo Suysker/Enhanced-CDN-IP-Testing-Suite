@@ -34,6 +34,7 @@ jobs:
             echo "GitHub Action environment does not support IPv6."
             exit 1
           fi
+          
       - name: Convert IPv6s and Check availability
         run: |
           curl -s https://api.gcore.com/cdn/public-ip-list | jq -r '.addresses[]' > Gcore/ipv6.txt
@@ -49,7 +50,7 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add Gcore/whole_ips.txt Gcore/reachable_ips.txt Gcore/simple_reachable_ips.txt Gcore/bind_config.txt
+          git add Gcore/whole_ips.txt Gcore/reachable_ips.txt Gcore/simple_reachable_ips.txt Gcore/bind_config.txt Gcore/ipv6_whole_ips.txt Gcore/ipv6_reachable_ips.txt Gcore/ipv6_simple_reachable_ips.txt Gcore/ipv6_bind_config.txt
           git commit -m "Update Gcoer CDN IPV4"
           git push
       
@@ -62,3 +63,7 @@ jobs:
             Gcore/reachable_ips.txt
             Gcore/simple_reachable_ips.txt
             Gcore/bind_config.txt
+            Gcore/ipv6_whole_ips.txt
+            Gcore/ipv6_reachable_ips.txt
+            Gcore/ipv6_simple_reachable_ips.txt
+            Gcore/ipv6_bind_config.txt

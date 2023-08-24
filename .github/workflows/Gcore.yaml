@@ -20,7 +20,7 @@ jobs:
           sudo mv wgcf /usr/local/bin/wgcf
           wgcf register --accept-tos
           wgcf generate
-          sudo apt install wireguard resolvconf
+          sudo apt install wireguard resolvconf jq
           sed -i '/MTU = 1280/a Table = off' wgcf-profile.conf
           sed -i '/Table = off/a PostUp = ip -4 rule add fwmark 51820 lookup 51820\nPostUp = ip -4 rule add table main suppress_prefixlength 0\nPostUp = ip -4 route add default dev wgcf table 51820\nPostDown = ip -4 rule delete fwmark 51820 lookup 51820\nPostDown = ip -4 rule delete table main suppress_prefixlength 0\nPostUp = ip -6 rule add not fwmark 51820 table 51820 prio 40000\nPostUp = ip -6 rule add fwmark 51820 lookup 51820\nPostUp = ip -6 rule add table main suppress_prefixlength 0\nPostUp = ip -6 route add default dev wgcf table 51820\nPostDown = ip -6 rule delete fwmark 51820 lookup 51820\nPostDown = ip -6 rule delete not fwmark 51820 table 51820 prio 40000\nPostDown = ip -6 rule delete table main suppress_prefixlength 0' wgcf-profile.conf
           sudo cp wgcf-profile.conf /etc/wireguard/wgcf.conf
@@ -37,7 +37,6 @@ jobs:
       
       - name: Convert IPv4s and Check availability
         run: |
-          apt install jq
           curl -s https://api.gcore.com/cdn/public-ip-list | jq -r '.addresses[]' > /Gcore/ip.txt
           python3 ./Gcore/ipv4_check_script.py
       

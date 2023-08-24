@@ -18,8 +18,16 @@ if __name__ == '__main__':
         ips = [ipaddress.ip_network(ip.strip()) for ip in file.readlines()]
 
     # 合并 /32 到 /24 网段
-    subnets_24 = ipaddress.collapse_addresses(ips)
-    whole_ips = [subnet for subnet in subnets_24 if subnet.prefixlen == 24]
+    subnets_24 = defaultdict(list)
+
+    for ip in ips:
+        network_address = ip.network_address
+        parts = str(network_address).split('.')[:-1]
+        network_24_address_str = '.'.join(parts) + '.0/24'
+        network_24 = ipaddress.ip_network(network_24_address_str, strict=False)
+        subnets_24[network_24].append(ip)
+
+    whole_ips = [subnet for subnet, ips_in_subnet in subnets_24.items() if len(ips_in_subnet) > 0]
 
     # 生成 whole_ips.txt 和 bind_config.txt 文件
     with open('Gcore/whole_ips.txt', 'w') as file_whole_ips, open('Gcore/bind_config.txt', 'w') as file_bind_config:

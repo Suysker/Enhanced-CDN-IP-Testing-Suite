@@ -37,7 +37,7 @@ jobs:
       
       - name: Convert IPv4s and Check availability
         run: |
-          curl -s https://api.gcore.com/cdn/public-ip-list | jq -r '.addresses[]' > /Gcore/ip.txt
+          curl -s https://api.gcore.com/cdn/public-ip-list | jq -r '.addresses[]' > Gcore/ip.txt
           python3 ./Gcore/ipv4_check_script.py
       
       # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库

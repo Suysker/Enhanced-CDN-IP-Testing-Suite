@@ -1,6 +1,7 @@
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor
 import subprocess
+from collections import defaultdict
 
 def is_ip_reachable(ip):
     try:

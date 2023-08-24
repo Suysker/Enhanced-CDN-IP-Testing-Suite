@@ -37,7 +37,7 @@ if __name__ == '__main__':
                 reachable_ips.append(str(whole_ips[i//256].network_address))
 
     # 生成 reachable_ips.txt 和 simple_reachable_ips.txt 文件
-    with open('/Gcore/reachable_ips.txt', 'w') as file_reachable_ips, open('Gcore/simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
+    with open('Gcore/reachable_ips.txt', 'w') as file_reachable_ips, open('Gcore/simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
         for ip in reachable_ips:
             file_reachable_ips.write(ip + '\n')
             file_simple_reachable_ips.write(ip.split('.')[0] + '.' + ip.split('.')[1] + '.' + ip.split('.')[2] + '.1/32\n')

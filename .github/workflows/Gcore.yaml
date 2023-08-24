@@ -1,0 +1,61 @@
+name: Gcore IP Check Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check_ips:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.IP_Check_PAT }}  # Use the GITHUB_TOKEN to get push access.
+
+      - name: Install Cloudflare WARP
+        run: |
+          wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v2.2.18/wgcf_2.2.18_linux_amd64
+          chmod +x wgcf
+          sudo mv wgcf /usr/local/bin/wgcf
+          wgcf register --accept-tos
+          wgcf generate
+          sudo apt install wireguard resolvconf
+          sed -i '/MTU = 1280/a Table = off' wgcf-profile.conf
+          sed -i '/Table = off/a PostUp = ip -4 rule add fwmark 51820 lookup 51820\nPostUp = ip -4 rule add table main suppress_prefixlength 0\nPostUp = ip -4 route add default dev wgcf table 51820\nPostDown = ip -4 rule delete fwmark 51820 lookup 51820\nPostDown = ip -4 rule delete table main suppress_prefixlength 0\nPostUp = ip -6 rule add not fwmark 51820 table 51820 prio 40000\nPostUp = ip -6 rule add fwmark 51820 lookup 51820\nPostUp = ip -6 rule add table main suppress_prefixlength 0\nPostUp = ip -6 route add default dev wgcf table 51820\nPostDown = ip -6 rule delete fwmark 51820 lookup 51820\nPostDown = ip -6 rule delete not fwmark 51820 table 51820 prio 40000\nPostDown = ip -6 rule delete table main suppress_prefixlength 0' wgcf-profile.conf
+          sudo cp wgcf-profile.conf /etc/wireguard/wgcf.conf
+          sudo wg-quick up wgcf
+
+      - name: Check GitHub Action IPv6 Support
+        run: |
+          if ping6 -c 1 2001:4860:4860::8888 -I wgcf; then
+            echo "GitHub Action environment supports IPv6."
+          else
+            echo "GitHub Action environment does not support IPv6."
+            exit 1
+          fi
+      
+      - name: Convert IPv4s and Check availability
+        run: |
+          apt install jq
+          curl -s https://api.gcore.com/cdn/public-ip-list | jq -r '.addresses[]' > /Gcore/ip.txt
+          python3 ./Gcore/ipv4_check_script.py
+      
+      # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add /Gcore/whole_ips.txt /Gcore/reachable_ips.txt /Gcore/simple_reachable_ips.txt /Gcore/bind_config.txt
+          git commit -m "Update Gcoer CDN IPV4"
+          git push
+      
+      - name: Upload Result
+        uses: actions/upload-artifact@v3
+        with:
+          name: results
+          path: |
+            whole_ips.txt
+            reachable_ips.txt
+            simple_reachable_ips.txt
+            bind_config.txt

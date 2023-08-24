@@ -1,5 +1,6 @@
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import as_completed # 必须导入这个
 import subprocess
 from collections import defaultdict
 
@@ -20,7 +21,7 @@ if __name__ == '__main__':
 
     # 合并 /32 到 /24 网段
     subnets_24 = defaultdict(list)
-
+    
     for ip in ips:
         network_address = ip.network_address
         parts = str(network_address).split('.')[:-1]
@@ -28,22 +29,32 @@ if __name__ == '__main__':
         network_24 = ipaddress.ip_network(network_24_address_str, strict=False)
         subnets_24[network_24].append(ip)
 
-    whole_ips = [subnet for subnet, ips_in_subnet in subnets_24.items() if len(ips_in_subnet) > 0]
+    whole_ips = []
+    for subnet in subnets_24.keys():
+        for host in subnet.hosts():
+            whole_ips.append(str(host))
 
     # 生成 whole_ips.txt 和 bind_config.txt 文件
     with open('Gcore/whole_ips.txt', 'w') as file_whole_ips, open('Gcore/bind_config.txt', 'w') as file_bind_config:
-        for subnet in whole_ips:
-            file_whole_ips.write(str(subnet.network_address) + '\n')
-            domain = generate_domain(subnet.network_address)
-            file_bind_config.write(f"{domain}. 1 IN A {subnet.network_address}\n")
+        for ip in whole_ips:
+            file_whole_ips.write(ip + '\n')
+            domain = generate_domain(ip)
+            file_bind_config.write(f"{domain}. 1 IN A {ip}\n")
 
-    # 测试每个 /24 网段的可用性
+    # 测试每个 /32 IP的可用性
     reachable_ips = []
+    total = len(whole_ips)
+    completed = 0
     with ThreadPoolExecutor(max_workers=256) as executor:
-        futures = [executor.submit(is_ip_reachable, str(ip)) for subnet in whole_ips for ip in subnet.hosts()]
-        for i, future in enumerate(futures):
-            if future.result():
-                reachable_ips.append(str(whole_ips[i//256].network_address))
+        future_to_ip = {executor.submit(is_ip_reachable, ip): ip for ip in whole_ips}
+        for future in as_completed(future_to_ip):
+            completed += 1
+            ip = future_to_ip[future]
+            result = future.result()
+            if result:
+                reachable_ips.append(ip)
+            progress = (completed * 100) // total # 根据整体任务数量计算进度百分比
+            print(f"Progress: {progress}% ({completed}/{total} IPs checked)")
 
     # 生成 reachable_ips.txt 和 simple_reachable_ips.txt 文件
     with open('Gcore/reachable_ips.txt', 'w') as file_reachable_ips, open('Gcore/simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:

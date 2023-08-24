@@ -4,6 +4,8 @@ from concurrent.futures import as_completed # 必须导入这个
 import subprocess
 from collections import defaultdict
 
+urlprefix = ".ip"
+
 def is_ip_reachable(ip):
     try:
         result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
@@ -13,7 +15,7 @@ def is_ip_reachable(ip):
 
 def generate_domain(ip_address):
     parts = str(ip_address).split(".")
-    return "-".join(parts) + ".ip"
+    return "-".join(parts) + urlprefix
 
 if __name__ == '__main__':
     with open('Gcore/ip.txt', 'r') as file:

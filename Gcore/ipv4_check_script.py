@@ -26,9 +26,10 @@ if __name__ == '__main__':
     
     for ip in ips:
         network_address = ip.network_address
-        parts = str(network_address).split('.')[:3]
+        parts = str(network_address).split('.')[:-1]
         network_24_address_str = '.'.join(parts) + '.0/24'
         network_24 = ipaddress.ip_network(network_24_address_str, strict=False)
+        subnets_24[network_24].append(ip)
 
     whole_ips = []
     for subnet in subnets_24.keys():

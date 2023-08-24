@@ -58,8 +58,14 @@ if __name__ == '__main__':
 
     # 生成 reachable_ips.txt 和 simple_reachable_ips.txt 文件
     with open('Gcore/reachable_ips.txt', 'w') as file_reachable_ips, open('Gcore/simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
+        recorded_subnets = set() # 用于记录已经处理过的/24网段
+
         for ip in reachable_ips:
             file_reachable_ips.write(ip + '\n')
-            file_simple_reachable_ips.write(ip.split('.')[0] + '.' + ip.split('.')[1] + '.' + ip.split('.')[2] + '.1/32\n')
+        
+            subnet = ip.rsplit('.', 1)[0] # 获取IP地址的前三个数字，即/24网段
+            if subnet not in recorded_subnets:
+                recorded_subnets.add(subnet)
+                file_simple_reachable_ips.write(ip + '\n') # 以/32格式写入该网段的第一个可达IP
 
     print("Done!")

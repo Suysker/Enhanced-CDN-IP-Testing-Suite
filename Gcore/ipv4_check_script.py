@@ -22,7 +22,7 @@ if __name__ == '__main__':
     whole_ips = [subnet for subnet in subnets_24 if subnet.prefixlen == 24]
 
     # 生成 whole_ips.txt 和 bind_config.txt 文件
-    with open('whole_ips.txt', 'w') as file_whole_ips, open('bind_config.txt', 'w') as file_bind_config:
+    with open('/Gcore/whole_ips.txt', 'w') as file_whole_ips, open('/Gcore/bind_config.txt', 'w') as file_bind_config:
         for subnet in whole_ips:
             file_whole_ips.write(str(subnet.network_address) + '\n')
             domain = generate_domain(subnet.network_address)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
                 reachable_ips.append(str(whole_ips[i//256].network_address))
 
     # 生成 reachable_ips.txt 和 simple_reachable_ips.txt 文件
-    with open('reachable_ips.txt', 'w') as file_reachable_ips, open('simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
+    with open('/Gcore/reachable_ips.txt', 'w') as file_reachable_ips, open('/Gcore/simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
         for ip in reachable_ips:
             file_reachable_ips.write(ip + '\n')
             file_simple_reachable_ips.write(ip.split('.')[0] + '.' + ip.split('.')[1] + '.' + ip.split('.')[2] + '.1/32\n')

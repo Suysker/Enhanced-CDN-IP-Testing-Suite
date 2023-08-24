@@ -6,8 +6,8 @@ from collections import defaultdict
 
 def is_ip_reachable(ip):
     try:
-        result = subprocess.run(["curl", "/dev/null", "-I", f"http://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=3)
-        return result.returncode == 52
+        result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        return result.returncode == 60
     except subprocess.TimeoutExpired:
         return False
 

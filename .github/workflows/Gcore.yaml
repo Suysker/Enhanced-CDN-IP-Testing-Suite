@@ -51,7 +51,7 @@ jobs:
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add Gcore/whole_ips.txt Gcore/reachable_ips.txt Gcore/simple_reachable_ips.txt Gcore/bind_config.txt Gcore/ipv6_whole_ips.txt Gcore/ipv6_reachable_ips.txt Gcore/ipv6_simple_reachable_ips.txt Gcore/ipv6_bind_config.txt
-          git commit -m "Update Gcoer CDN IPV4"
+          git commit -m "Update Gcoer CDN IPV4 IPV6"
           git push
       
       - name: Upload Result

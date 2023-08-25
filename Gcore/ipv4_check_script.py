@@ -36,6 +36,8 @@ if __name__ == '__main__':
         for host in subnet.hosts():
             whole_ips.append(str(host))
 
+    whole_ips.sort() # 对整个IP列表进行排序
+
     # 生成 whole_ips.txt 和 bind_config.txt 文件
     with open('Gcore/whole_ips.txt', 'w') as file_whole_ips, open('Gcore/bind_config.txt', 'w') as file_bind_config:
         for ip in whole_ips:

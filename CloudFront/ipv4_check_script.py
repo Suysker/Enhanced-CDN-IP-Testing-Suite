@@ -59,8 +59,8 @@ if __name__ == '__main__':
             print(f"Progress: {completed}/{total} subnets checked")
 
     all_subnets_24 = []
-    for ip in reachable_ips:
-        all_subnets_24 += list(ipaddress.ip_network(ip).supernet(new_prefix=24))
+    for subnet in reachable_ips:
+        all_subnets_24 += list(subnet.supernet(new_prefix=24))
 
     reachable_ips = []
     geo_reachable_ips = []

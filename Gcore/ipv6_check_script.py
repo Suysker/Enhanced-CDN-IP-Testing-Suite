@@ -23,16 +23,16 @@ if __name__ == '__main__':
         for line in file_whole_ips:
             file_reachable_ips.write(line)
 
-    # 生成 ipv6_simple_reachable_ips.txt 文件，包含每个/64段的第一个IP
+# 生成 ipv6_simple_reachable_ips.txt 文件，包含每个/64段的第一个可达IP
     with open('Gcore/ipv6_reachable_ips.txt', 'r') as file_reachable_ips, open('Gcore/ipv6_simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
         recorded_subnets = set() # 用于记录已经处理过的/64网段
 
-        for ip in file_reachable_ips:
-            ip = ip.strip()
-            network = ipaddress.ip_network(f"{ip}/64", strict=False) # 创建一个/64网段
-            simple_ip = str(network.network_address) # 获取/64网段的第一个IP
+        for line in file_reachable_ips:
+            ip = line.strip()
+            network = ipaddress.ip_network(ip + '/64', strict=False) # 创建一个/64网段
+            simple_ip = str(network.network_address) # 获取/64网段
             if simple_ip not in recorded_subnets:
                 recorded_subnets.add(simple_ip)
-                file_simple_reachable_ips.write(simple_ip + '\n')
+                file_simple_reachable_ips.write(ip + '\n') # 写入原始的可达IP地址，而不是网段的第一个IP
 
     print("Done!")

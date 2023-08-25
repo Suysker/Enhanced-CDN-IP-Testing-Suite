@@ -60,6 +60,8 @@ if __name__ == '__main__':
             progress = (completed * 100) // total # 根据整体任务数量计算进度百分比
             print(f"Progress: {progress}% ({completed}/{total} IPs checked)")
 
+    reachable_ips.sort() # 对可达IP地址进行排序
+
     # 生成 reachable_ips.txt 和 simple_reachable_ips.txt 文件
     with open('Gcore/reachable_ips.txt', 'w') as file_reachable_ips, open('Gcore/simple_reachable_ips.txt', 'w') as file_simple_reachable_ips:
         recorded_subnets = set() # 用于记录已经处理过的/24网段

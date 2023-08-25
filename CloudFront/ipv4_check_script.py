@@ -28,28 +28,28 @@ if __name__ == '__main__':
     with open('CloudFront/ip.txt', 'r') as file:
         ips = [ipaddress.ip_network(ip.strip()) for ip in file.readlines()]
 
-    all_subnets_24 = [] # Store all /24 subnets
+    all_subnets_22 = [] # Store all /22 subnets
 
     for ip in ips:
-        # Expand all networks to /24
-        if ip.prefixlen < 24:
-            all_subnets_24 += list(ip.subnets(new_prefix=24))
-        elif ip.prefixlen == 24:
-            all_subnets_24.append(ip)
-        else: # ip.prefixlen > 24
+        # Expand all networks to /22
+        if ip.prefixlen < 22:
+            all_subnets_22 += list(ip.subnets(new_prefix=22))
+        elif ip.prefixlen == 22:
+            all_subnets_22.append(ip)
+        else: # ip.prefixlen > 22
             base_ip = ip.network_address
-            all_subnets_24.append(ipaddress.ip_network(f"{base_ip}/24", strict=False))
+            all_subnets_22.append(ipaddress.ip_network(f"{base_ip}/22", strict=False))
 
     reachable_ips = []
     geo_reachable_ips = []
     simple_reachable_ips = []
     geo_simple_reachable_ips = []
 
-    total = len(all_subnets_24)
+    total = len(all_subnets_22)
     completed = 0
 
     with ThreadPoolExecutor(max_workers=1024) as executor:
-        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_24)}
+        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_22)}
         for future in as_completed(future_to_subnet):
             completed += 1
             subnet = future_to_subnet[future]

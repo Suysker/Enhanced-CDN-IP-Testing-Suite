@@ -25,7 +25,7 @@ def generate_domain(ip_address):
     return "-".join(parts) + urlprefix
 
 if __name__ == '__main__':
-    with open('ip.txt', 'r') as file:
+    with open('Cloudflare/ip.txt', 'r') as file:
         subnets = file.readlines()
 
     all_subnets_24 = []
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             print(f"Progress: {completed}/{total} subnets checked")
 
     # Save all subnets /24
-    with open('whole_ips.txt', 'w') as file:
+    with open('Cloudflare/whole_ips.txt', 'w') as file:
         for subnet in all_subnets_24:
             file.write(str(subnet.network_address) + '\n')
 
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     reachable_ips = sorted(reachable_ips)
 
     # Save selected IPs
-    with open('reachable_ips.txt', 'w') as file:
+    with open('Cloudflare/reachable_ips.txt', 'w') as file:
         for ip in reachable_ips:
             file.write(str(ip) + '\n')
 
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         subnet_20 = ipaddress.ip_network(first_ip).supernet(new_prefix=20)
         reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_20)]
 
-    with open('simple_reachable_ips.txt', 'w') as file:
+    with open('Cloudflare/simple_reachable_ips.txt', 'w') as file:
         for ip in selected_ips:
             file.write(str(ip) + '\n')
 

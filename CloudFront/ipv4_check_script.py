@@ -39,21 +39,9 @@ if __name__ == '__main__':
         else: # ip.prefixlen > 22
             base_ip = ip.network_address
             all_subnets_22.append(ipaddress.ip_network(f"{base_ip}/22", strict=False))
-
-    # Save all subnets /22
-    with open('CloudFront/whole_ips.txt', 'w') as file:
-        for subnet in all_subnets_22:
-            file.write(str(subnet.network_address) + '\n')
-    
-    with open('CloudFront/bind_config.txt', 'w') as file:
-        for ip in all_subnets_22:
-            domain = generate_domain(ip.network_address)
-            file.write(f"{domain}. 1 IN A {ip.network_address}\n")
     
     reachable_ips = []
     geo_reachable_ips = []
-    simple_reachable_ips = []
-    geo_simple_reachable_ips = []
 
     total = len(all_subnets_22)
     completed = 0
@@ -70,7 +58,39 @@ if __name__ == '__main__':
                     geo_reachable_ips.append((result, geo_code))
             print(f"Progress: {completed}/{total} subnets checked")
 
-    # Other logic to save subnets, domains, and reachable IPs
+    all_subnets_24 = []
+    for ip in reachable_ips:
+        all_subnets_24 += list(ipaddress.ip_network(ip).supernet(new_prefix=24))
+
+    reachable_ips = []
+    geo_reachable_ips = []
+    simple_reachable_ips = []
+    geo_simple_reachable_ips = []
+
+    total = len(all_subnets_24)
+    completed = 0
+        
+    with ThreadPoolExecutor(max_workers=1024) as executor:
+        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_24)}
+        for future in as_completed(future_to_subnet):
+            completed += 1
+            subnet = future_to_subnet[future]
+            result, geo_code = future.result()
+            if result:
+                reachable_ips.append(result)
+                if geo_code:
+                    geo_reachable_ips.append((result, geo_code))
+            print(f"Progress: {completed}/{total} subnets checked")
+    
+    # Save all subnets /24
+    with open('CloudFront/whole_ips.txt', 'w') as file:
+        for subnet in all_subnets_24:
+            file.write(str(subnet.network_address) + '\n')
+    
+    with open('CloudFront/bind_config.txt', 'w') as file:
+        for ip in all_subnets_24:
+            domain = generate_domain(ip.network_address)
+            file.write(f"{domain}. 1 IN A {ip.network_address}\n")
 
     # Save reachable IPs
     with open('CloudFront/reachable_ips.txt', 'w') as file:

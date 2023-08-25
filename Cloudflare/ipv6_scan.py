@@ -21,7 +21,7 @@ def first_reachable_ip_in_subnet(subnet):
     return ip if is_ip_reachable(ip) else None
 
 if __name__ == '__main__':
-    with open('ipv6_.txt', 'r') as file:
+    with open('Cloudflare/ipv6_.txt', 'r') as file:
         base_subnets = file.readlines()
 
     all_subnets_48 = []
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     reachable_ips = sorted(reachable_ips)
 
     # Save selected IPs
-    with open('ipv6.txt', 'w') as file:
+    with open('Cloudflare/ipv6.txt', 'w') as file:
         for ip in reachable_ips:
             file.write(str(ip) + '/48' + '\n')
 

@@ -8,7 +8,7 @@ def generate_domain(ip_address):
 
 if __name__ == '__main__':
     with open('Gcore/ipv6.txt', 'r') as file:
-        ipv6_addresses = [ipaddress.ip_interface(ip.strip()) for ip in file.readlines()] # 读取IPV6地址，包括/128后缀
+        ipv6_addresses = sorted([ipaddress.ip_interface(ip.strip()) for ip in file.readlines()]) # 读取并排序IPV6地址
 
     # 生成 whole_ips.txt 和 bind_config.txt 文件
     with open('Gcore/ipv6_whole_ips.txt', 'w') as file_whole_ips, open('Gcore/ipv6_bind_config.txt', 'w') as file_bind_config:

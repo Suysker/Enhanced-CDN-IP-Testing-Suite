@@ -1,4 +1,4 @@
-name: IP Check Action
+name: Cloudflare IP Check Action
 
 on:
   workflow_dispatch:
@@ -35,21 +35,26 @@ jobs:
             exit 1
           fi
 
+      - name: SCAN IPv6s and Check availability
+        run: |
+          curl -s https://www.cloudflare.com/ips-v6 -o Cloudflare/ipv6_.txt
+          python3 ./Cloudflare/ipv6_scan.py
+
       - name: Convert IPv6s and Check availability
         run: |
-          python3 ./ipv6_check_script.py
+          python3 ./Cloudflare/ipv6_check_script.py
       
       - name: Convert IPv4s and Check availability
         run: |
           curl -s https://www.cloudflare.com/ips-v4 -o Cloudflare/ip.txt
-          python3 ./ipv4_check_script.py
+          python3 ./Cloudflare/ipv4_check_script.py
       
       # 下面的步骤用于提交和推送 reachable_ips.txt 和 bind_config.txt 文件的更新到仓库
       - name: Commit and push changes
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add Cloudflare/whole_ips.txt Cloudflare/reachable_ips.txt Cloudflare/simple_reachable_ips.txt Cloudflare/bind_config.txt Cloudflare/ipv6_whole_ips.txt Cloudflare/ipv6_reachable_ips.txt Cloudflare/ipv6_simple_reachable_ips.txt Cloudflare/ipv6_bind_config.txt
+          git add Cloudflare/ipv6.txt Cloudflare/whole_ips.txt Cloudflare/reachable_ips.txt Cloudflare/simple_reachable_ips.txt Cloudflare/bind_config.txt Cloudflare/ipv6_whole_ips.txt Cloudflare/ipv6_reachable_ips.txt Cloudflare/ipv6_simple_reachable_ips.txt Cloudflare/ipv6_bind_config.txt
           git commit -m "Update Cloudflare CDN IPV4 IPV6"
           git push
       
@@ -58,6 +63,7 @@ jobs:
         with:
           name: results
           path: |
+            Cloudflare/ipv6.txt
             Cloudflare/whole_ips.txt
             Cloudflare/reachable_ips.txt
             Cloudflare/simple_reachable_ips.txt

@@ -41,11 +41,11 @@ if __name__ == '__main__':
             all_subnets_22.append(ipaddress.ip_network(f"{base_ip}/22", strict=False))
 
     # Save all subnets /22
-    with open('Cloudflare/whole_ips.txt', 'w') as file:
+    with open('CloudFront/whole_ips.txt', 'w') as file:
         for subnet in all_subnets_22:
             file.write(str(subnet.network_address) + '\n')
     
-    with open('bind_config.txt', 'w') as file:
+    with open('CloudFront/bind_config.txt', 'w') as file:
         for ip in all_subnets_22:
             domain = generate_domain(ip.network_address)
             file.write(f"{domain}. 1 IN A {ip.network_address}\n")
@@ -91,14 +91,14 @@ if __name__ == '__main__':
 
     simple_reachable_ips = selected_ips
 
-    with open('simple_reachable_ips.txt', 'w') as file:
+    with open('CloudFront/simple_reachable_ips.txt', 'w') as file:
         for ip in simple_reachable_ips:
             file.write(str(ip) + '\n')
 
     # Get geo information for simple reachable IPs
     geo_simple_reachable_ips = [item for item in geo_reachable_ips if item[0] in simple_reachable_ips]
 
-    with open('geo_simple_reachable_ips.txt', 'w') as file:
+    with open('CloudFront/geo_simple_reachable_ips.txt', 'w') as file:
         for ip, geo_code in geo_simple_reachable_ips:
             file.write(str(ip) + ' ' + geo_code + '\n')
 

@@ -59,8 +59,11 @@ if __name__ == '__main__':
             print(f"Progress: {completed}/{total} subnets checked")
 
     all_subnets_24 = []
-    for subnet in reachable_ips:
-        all_subnets_24 += list(subnet.supernet(new_prefix=24))
+    for ip in reachable_ips:
+        # 从可达IP地址创建/22的IP段
+        ip_network_22 = ipaddress.ip_network(f"{ip}/22", strict=False)
+        # 拆分为/24的IP段
+        all_subnets_24 += list(ip_network_22.subnets(new_prefix=24))
 
     reachable_ips = []
     geo_reachable_ips = []

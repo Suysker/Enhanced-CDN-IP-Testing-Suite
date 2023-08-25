@@ -47,7 +47,7 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git add CloudFront/whole_ips.txt CloudFront/reachable_ips.txt CloudFront/simple_reachable_ips.txt CloudFront/bind_config.txt
+          git add CloudFront/whole_ips.txt CloudFront/reachable_ips.txt CloudFront/simple_reachable_ips.txt CloudFront/bind_config.txt CloudFront/geo_reachable_ips.txt CloudFront/geo_simple_reachable_ips.txt
           git commit -m "Update CloudFront CDN IPV4 IPV6"
           git push
       
@@ -60,3 +60,5 @@ jobs:
             CloudFront/reachable_ips.txt
             CloudFront/simple_reachable_ips.txt
             CloudFront/bind_config.txt
+            CloudFront/geo_reachable_ips.txt
+            CloudFront/geo_simple_reachable_ips.txt

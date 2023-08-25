@@ -28,17 +28,17 @@ if __name__ == '__main__':
     with open('CloudFront/ip.txt', 'r') as file:
         ips = [ipaddress.ip_network(ip.strip()) for ip in file.readlines()]
 
-    subnets_24 = [] # 存储所有/24网段
+    all_subnets_24 = [] # 存储所有/24网段
 
     for ip in ips:
         # 将所有网段扩展为/24
         if ip.prefixlen < 24:
-            subnets_24 += list(ip.subnets(new_prefix=24))
+            all_subnets_24 += list(ip.subnets(new_prefix=24))
         elif ip.prefixlen == 24:
-            subnets_24.append(ip)
+            all_subnets_24.append(ip)
         else: # ip.prefixlen > 24
             base_ip = ip.network_address
-            subnets_24.append(ipaddress.ip_network(f"{base_ip}/24", strict=False))
+            all_subnets_24.append(ipaddress.ip_network(f"{base_ip}/24", strict=False))
 
     reachable_ips = []
     total = len(all_subnets_24)

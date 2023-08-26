@@ -53,7 +53,7 @@ if __name__ == '__main__':
     reachable_ips = []
     total = len(whole_ips)
     completed = 0
-    with ThreadPoolExecutor(max_workers=256) as executor:
+    with ThreadPoolExecutor(max_workers=128) as executor:
         future_to_ip = {executor.submit(is_ip_reachable, ip): ip for ip in whole_ips}
         for future in as_completed(future_to_ip):
             completed += 1

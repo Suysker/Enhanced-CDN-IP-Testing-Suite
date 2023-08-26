@@ -80,7 +80,7 @@ if __name__ == '__main__':
             file.write(str(ip) + '\n')
 
         # Save selected IPs
-    with open('CloudFront/ipv6_geo_reachable_ips.txt', 'w') as file:
+    with open('CloudFront/geo_ipv6_reachable_ips.txt', 'w') as file:
         for ip, geo_code in geo_reachable_ips:
             file.write(f"{ip} {geo_code}\n")
 
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     # Get geo information for simple reachable IPs
     geo_simple_reachable_ips = [item for item in geo_reachable_ips if item[0] in simple_reachable_ips]
 
-    with open('CloudFront/ipv6_geo_simple_reachable_ips.txt', 'w') as file:
+    with open('CloudFront/geo_ipv6_simple_reachable_ips.txt', 'w') as file:
         for ip, geo_code in geo_simple_reachable_ips:
             file.write(f"{ip} {geo_code}\n")
 

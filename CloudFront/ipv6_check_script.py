@@ -46,7 +46,7 @@ if __name__ == '__main__':
     total = len(all_subnets_48)
     completed = 0
 
-    with ThreadPoolExecutor(max_workers=4096) as executor:
+    with ThreadPoolExecutor(max_workers=1024) as executor:
         future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_48)}
         for future in as_completed(future_to_subnet):
             completed += 1

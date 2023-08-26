@@ -46,7 +46,7 @@ if __name__ == '__main__':
     total = len(all_subnets_48)
     completed = 0
 
-    with ThreadPoolExecutor(max_workers=2048) as executor:
+    with ThreadPoolExecutor(max_workers=4096) as executor:
         future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_48)}
         for future in as_completed(future_to_subnet):
             completed += 1
@@ -79,12 +79,17 @@ if __name__ == '__main__':
         for ip in reachable_ips:
             file.write(str(ip) + '\n')
 
+        # Save selected IPs
+    with open('CloudFront/ipv6_geo_reachable_ips.txt', 'w') as file:
+        for ip in geo_reachable_ips:
+            file.write(str(ip) + '\n')
+
     selected_ips = []
     while reachable_ips:
         first_ip = reachable_ips.pop(0)
         selected_ips.append(first_ip)
-        subnet_44 = ipaddress.ip_network(first_ip).supernet(new_prefix=44)
-        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_44)]
+        subnet_40 = ipaddress.ip_network(first_ip).supernet(new_prefix=40)
+        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_40)]
 
     simple_reachable_ips = selected_ips
 

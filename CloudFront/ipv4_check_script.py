@@ -64,6 +64,7 @@ if __name__ == '__main__':
         ip_network_22 = ipaddress.ip_network(f"{ip}/22", strict=False)
         # 拆分为/24的IP段
         all_subnets_24 += list(ip_network_22.subnets(new_prefix=24))
+    all_subnets_24.sort()
 
     reachable_ips = []
     geo_reachable_ips = []
@@ -84,6 +85,9 @@ if __name__ == '__main__':
                 if geo_code:
                     geo_reachable_ips.append((result, geo_code))
             print(f"Progress: {completed}/{total} subnets checked")
+
+    reachable_ips.sort()
+    geo_reachable_ips.sort()
     
     # Save all subnets /24
     with open('CloudFront/whole_ips.txt', 'w') as file:

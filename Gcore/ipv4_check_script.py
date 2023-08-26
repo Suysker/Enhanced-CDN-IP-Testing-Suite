@@ -9,14 +9,7 @@ urlprefix = ".ip"
 def is_ip_reachable(ip):
     try:
         result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
-        if result.returncode == 60:
-            # 使用 openssl 获取证书的 CN
-            cmd = f"echo | openssl s_client -connect {ip}:443 2>/dev/null | openssl x509 -noout -subject"
-            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2, shell=True)
-            # 检查 CN 中是否包含目标域名
-            return "gcdn.co" in result.stdout.decode('utf-8')
-        else:
-            return False
+        return result.returncode == 60:
     except subprocess.TimeoutExpired:
         return False
 

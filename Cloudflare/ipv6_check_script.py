@@ -32,7 +32,7 @@ def generate_domain(ip_address):
     return '-'.join(parts) + urlprefix
 
 if __name__ == '__main__':
-    with open('CloudFront/ipv6.txt', 'r') as file:
+    with open('Cloudflare/ipv6.txt', 'r') as file:
         base_subnets = file.readlines()
 
     all_subnets_52 = []
@@ -59,7 +59,7 @@ if __name__ == '__main__':
         for subnet in all_subnets_52:
             file.write(str(subnet.network_address) + '\n')
 
-    with open('CloudFront/ipv6_bind_config.txt', 'w') as file:
+    with open('Cloudflare/ipv6_bind_config.txt', 'w') as file:
         for ip in all_subnets_52:
             domain = generate_domain(ip.network_address)
             file.write(f"{domain}. 1 IN AAAA {ip.network_address}\n")
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     reachable_ips = sorted(reachable_ips)
 
     # Save selected IPs
-    with open('CloudFront/ipv6_reachable_ips.txt', 'w') as file:
+    with open('Cloudflare/ipv6_reachable_ips.txt', 'w') as file:
         for ip in reachable_ips:
             file.write(str(ip) + '\n')
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         subnet_48 = ipaddress.ip_network(first_ip).supernet(new_prefix=48)
         reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_48)]
 
-    with open('CloudFront/ipv6_simple_reachable_ips.txt', 'w') as file:
+    with open('Cloudflare/ipv6_simple_reachable_ips.txt', 'w') as file:
         for ip in selected_ips:
             file.write(str(ip) + '\n')
 

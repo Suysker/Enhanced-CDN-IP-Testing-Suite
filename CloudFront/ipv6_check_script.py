@@ -38,6 +38,7 @@ if __name__ == '__main__':
         else: # ip.prefixlen > 48
             base_ip = ip.network_address
             all_subnets_48.append(ipaddress.ip_network(f"{base_ip}/48", strict=False))
+    all_subnets_48.sort()
     
     reachable_ips = []
     geo_reachable_ips = []
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     total = len(all_subnets_48)
     completed = 0
 
-    with ThreadPoolExecutor(max_workers=1024) as executor:
+    with ThreadPoolExecutor(max_workers=2048) as executor:
         future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_48)}
         for future in as_completed(future_to_subnet):
             completed += 1
@@ -56,6 +57,9 @@ if __name__ == '__main__':
                 if geo_code:
                     geo_reachable_ips.append((result, geo_code))
             print(f"Progress: {completed}/{total} subnets checked")
+
+    reachable_ips.sort()
+    geo_reachable_ips.sort()
 
     # Save all subnets /48
     with open('CloudFront/ipv6_whole_ips.txt', 'w') as file:

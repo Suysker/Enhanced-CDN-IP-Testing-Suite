@@ -5,15 +5,19 @@ import subprocess
 from collections import defaultdict
 
 urlprefix = ".ip"
-
+result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        return result.returncode == 60
 def is_ip_reachable(ip):
     try:
-        # 使用 openssl 获取证书的 CN
-        cmd = f"echo | openssl s_client -connect {ip}:443 2>/dev/null | openssl x509 -noout -subject"
-        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2, shell=True)
-        
-        # 检查 CN 中是否包含目标域名
-        return "gcdn.co" in result.stdout.decode('utf-8')
+        result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        if result.returncode == 60:
+            # 使用 openssl 获取证书的 CN
+            cmd = f"echo | openssl s_client -connect {ip}:443 2>/dev/null | openssl x509 -noout -subject"
+            result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2, shell=True)
+            # 检查 CN 中是否包含目标域名
+            return "gcdn.co" in result.stdout.decode('utf-8')
+        else:
+            return False
     except subprocess.TimeoutExpired:
         return False
 
@@ -53,7 +57,7 @@ if __name__ == '__main__':
     reachable_ips = []
     total = len(whole_ips)
     completed = 0
-    with ThreadPoolExecutor(max_workers=128) as executor:
+    with ThreadPoolExecutor(max_workers=1024) as executor:
         future_to_ip = {executor.submit(is_ip_reachable, ip): ip for ip in whole_ips}
         for future in as_completed(future_to_ip):
             completed += 1

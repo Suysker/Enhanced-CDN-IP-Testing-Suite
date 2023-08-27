@@ -51,7 +51,10 @@ if __name__ == '__main__':
         for future in as_completed(future_to_subnet):
             completed += 1
             subnet = future_to_subnet[future]
-            result, geo_code = future.result()
+            result_data = future.result()
+            if not result_data:
+                continue  # 直接跳到下一个iteration
+            result, geo_code = result_data
             if result:
                 reachable_ips.append(result)
                 if geo_code:
@@ -79,7 +82,10 @@ if __name__ == '__main__':
         for future in as_completed(future_to_subnet):
             completed += 1
             subnet = future_to_subnet[future]
-            result, geo_code = future.result()
+            result_data = future.result()
+            if not result_data:
+                continue  # 直接跳到下一个iteration
+            result, geo_code = result_data
             if result:
                 reachable_ips.append(result)
                 if geo_code:

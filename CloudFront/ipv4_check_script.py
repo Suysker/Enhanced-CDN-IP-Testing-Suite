@@ -9,10 +9,10 @@ def is_ip_reachable(ip):
         result = subprocess.run(["curl", "-I", "-s",  f"http://{ip}/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
         response = result.stdout.decode('utf-8')
         if "CloudFront" in response:
-            geo_code = response.split('X-Amz-Cf-Pop: ')[1][:3]
-            return ip, geo_code
-        else:
-            return None, None
+            if 'X-Amz-Cf-Pop:' in response:
+                geo_code = response.split('X-Amz-Cf-Pop: ')[1][:3]
+                return ip, geo_code
+            return ip, None
     except subprocess.TimeoutExpired:
         return None, None
 

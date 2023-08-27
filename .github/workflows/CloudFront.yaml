@@ -37,7 +37,7 @@ jobs:
 
       - name: Convert IPv6s and Check availability
         run: |
-          curl -s https://ip-ranges.amazonaws.com/ip-ranges.json | jq -r '.ipv6_prefixes[].ipv6_prefix' > CloudFront/ipv6.txt
+          curl -s https://ip-ranges.amazonaws.com/ip-ranges.json | jq -r '.ipv6_prefixes[] | select(.service == "CLOUDFRONT") | .ipv6_prefix' > CloudFront/ipv6.txt
           python3 ./CloudFront/ipv6_check_script.py
       
       - name: Convert IPv4s and Check availability

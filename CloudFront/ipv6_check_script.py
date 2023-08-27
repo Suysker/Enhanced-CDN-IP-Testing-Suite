@@ -28,26 +28,26 @@ if __name__ == '__main__':
     with open('CloudFront/ipv6.txt', 'r') as file:
         ips = [ipaddress.ip_network(ip.strip()) for ip in file.readlines()]
 
-    all_subnets_48 = []
+    all_subnets_52 = []
 
     for ip in ips:
-        if ip.prefixlen < 48:
-            all_subnets_48 += list(ip.subnets(new_prefix=48))
-        elif ip.prefixlen == 48:
-            all_subnets_48.append(ip)
-        else: # ip.prefixlen > 48
+        if ip.prefixlen < 52:
+            all_subnets_52 += list(ip.subnets(new_prefix=52))
+        elif ip.prefixlen == 52:
+            all_subnets_52.append(ip)
+        else: # ip.prefixlen > 52
             base_ip = ip.network_address
-            all_subnets_48.append(ipaddress.ip_network(f"{base_ip}/48", strict=False))
-    all_subnets_48.sort()
+            all_subnets_52.append(ipaddress.ip_network(f"{base_ip}/52", strict=False))
+    all_subnets_52.sort()
     
     reachable_ips = []
     geo_reachable_ips = []
 
-    total = len(all_subnets_48)
+    total = len(all_subnets_52)
     completed = 0
 
     with ThreadPoolExecutor(max_workers=2048) as executor:
-        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_48)}
+        future_to_subnet = {executor.submit(first_reachable_ip_in_subnet, subnet): subnet for subnet in sorted(all_subnets_52)}
         for future in as_completed(future_to_subnet):
             completed += 1
             subnet = future_to_subnet[future]
@@ -61,13 +61,13 @@ if __name__ == '__main__':
     reachable_ips.sort()
     geo_reachable_ips.sort()
 
-    # Save all subnets /48
+    # Save all subnets /52
     with open('CloudFront/ipv6_whole_ips.txt', 'w') as file:
-        for subnet in all_subnets_48:
+        for subnet in all_subnets_52:
             file.write(str(subnet.network_address) + '\n')
     
     with open('CloudFront/ipv6_bind_config.txt', 'w') as file:
-        for ip in all_subnets_48:
+        for ip in all_subnets_52:
             domain = generate_domain(ip.network_address)
             file.write(f"{domain}. 1 IN AAAA {ip.network_address}\n")
 
@@ -88,8 +88,8 @@ if __name__ == '__main__':
     while reachable_ips:
         first_ip = reachable_ips.pop(0)
         selected_ips.append(first_ip)
-        subnet_44 = ipaddress.ip_network(first_ip).supernet(new_prefix=44)
-        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_44)]
+        subnet_48 = ipaddress.ip_network(first_ip).supernet(new_prefix=48)
+        reachable_ips = [ip for ip in reachable_ips if not ipaddress.ip_network(ip).subnet_of(subnet_48)]
 
     simple_reachable_ips = selected_ips
 

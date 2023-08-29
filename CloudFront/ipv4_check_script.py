@@ -92,8 +92,10 @@ if __name__ == '__main__':
                     geo_reachable_ips.append((result, geo_code))
             print(f"Progress: {completed}/{total} subnets checked")
 
-    reachable_ips=list(set(reachable_ips)).sort()
-    geo_reachable_ips=list(set(geo_reachable_ips)).sort()
+    reachable_ips=list(set(reachable_ips))
+    reachable_ips.sort()
+    geo_reachable_ips=list(set(geo_reachable_ips))
+    geo_reachable_ips.sort()
     
     # Save all subnets /24
     with open('CloudFront/whole_ips.txt', 'w') as file:

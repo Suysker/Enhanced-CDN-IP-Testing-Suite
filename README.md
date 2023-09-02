@@ -6,7 +6,7 @@ Originating from the Cloudflare IP Batch Test Tool, this enhanced version expand
 
 ## Official Website
 
-[https://ip.suysker.top](https://ip.suysker.top/)
+[http://ip.suysker.top](http://ip.suysker.top/)
 
 
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<!-- head content -->
+<script src="/script.js" type="text/javascript" defer></script>
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width" name="viewport" />
+  <meta content="Multi-Provider IP Test Tool including HTTP respond time and download speed" name="description" />
+  <title>Multi-Provider IP Batch Test Tool</title>
+  <link href="https://unpkg.com/tabulator-tables@5.5.1/dist/css/tabulator_site.min.css" rel="stylesheet" />
+  <link href="/style.css" rel="stylesheet" />
+  <script src="https://unpkg.com/jquery@3.7.0/dist/jquery.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/tabulator-tables@5.5.1/dist/js/tabulator.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <h1>Multi-Provider IP Batch Test Tool</h1>
+  <div class="table panel">
+    <div class="line">
+      <div class="col">
+        <button class="button big provider-button" id="Cloudflare" data-status="0">Cloudflare</button>
+      </div>
+      <div class="col">
+        <button class="button big provider-button" id="CloudFront" data-status="0">CloudFront</button>
+      </div>
+      <div class="col">
+        <button class="button big provider-button" id="Gcore" data-status="0">Gcore</button>
+      </div>
+    </div>
+
+    <div class="line">
+      <div class="col">
+        <button class="button big ip-button" id="simple_reachable_ips" data-status="0">IPV4 Simple</button>
+      </div>
+      <div class="col">
+        <button class="button big ip-button" id="reachable_ips" data-status="0">IPV4 Whole</button>
+      </div>
+      <div class="col">
+        <button class="button big ip-button" id="ipv6_simple_reachable_ips" data-status="0">IPV6 Simple</button>
+      </div>
+      <div class="col">
+        <button class="button big ip-button" id="ipv6_reachable_ips" data-status="0">IPV6 Whole</button>
+      </div>
+    </div>
+
+    <div class="line">
+      <div>Concurrency: <input class="border" id="concurrency-input" min="1" type="number" value="20" /></div>
+      <div>Ping Timeout(ms): <input class="border" id="ping-timeout-input" min="100" type="number" value="2000" />
+      </div>
+      <div>HTTP Timeout(ms): <input class="border" id="http-timeout-input" min="100" type="number" value="30000" />
+      </div>
+    </div>
+
+    <div class="line">
+      <div class="col">
+        <button class="button big" id="select-all" data-status="0">Select All</button>
+        <div class="line">
+          <input class="border" id="select-number" max="100" min="1" type="number" value="20" />
+          <button class="button" id="select-random"> Random </button>
+        </div>
+      </div>
+      <div class="col">
+        <button class="button big" id="test-region-button">Select Region</button>
+        <div class="line">
+          <select class="border" id="region-select">
+            <option value="">All</option>
+          </select>
+        </div>
+      </div>
+      <div class="col">
+        <button class="button big" id="test-respond" data-status="0">Test Respond</button>
+        <div class="line">
+          <select class="border" id="img-select">
+            <option value="0">115KB</option>
+            <option selected="selected" value="1">1.45MB</option>
+            <option value="2">10.3MB</option>
+          </select>
+          <button class="button" id="test-speed" data-status="0"> Speed </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="main-table"></div>
+  <div class="panel bottom">
+    <div class="button" id="download" data-status="0">Data Sheet</div>
+  </div>
+  <p>First Respond of every IP may be relatively slow</p>
+  <p>You can use Shift + Drag to choose a range quickly (in some browser)</p>
+  <p>If testing too frequently, you may be blocked by the firewall of your ISP or Cloudflare</p>
+  <p>It is not clear about the test consistency between browser and local software</p>
+  <p>Visit with either http or https may cause difference in results</p>
+  <p>Feedback via <a href="https://github.com/TulvL/cloudflare-ip-tester">Github</a> is welcome</p>
+  <p>IE browser is not supported</p>
+  <br />
+  <p><a href="https://blog.suysker.xyz/">HOME</a></p>
+  <br />
+  <br />
+</body>
+
+</html>

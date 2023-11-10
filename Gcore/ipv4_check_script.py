@@ -8,8 +8,9 @@ urlprefix = ".ip"
 
 def is_ip_reachable(ip):
     try:
-        result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
-        return result.returncode == 60
+        #result = subprocess.run(["curl", "/dev/null", "-I", f"https://{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        result = subprocess.run(["curl", "/dev/null", "-I", "https://gcore.com",f"--resolve gcore.com:443:{ip}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
+        return result.returncode == 200
     except subprocess.TimeoutExpired:
         return False
 

@@ -6,8 +6,11 @@ urlprefix = ".ip"
 
 def is_ip_reachable(ip):
     try:
-        result = subprocess.run(["curl", "-I", "-s",  f"http://{ip}/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=2)
-        response = result.stdout.decode('utf-8')
+        result = subprocess.run(["curl", "-I", "-s",  f"http://{ip}/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=3)
+        try:
+            response = result.stdout.decode('utf-8')
+        except:
+            return None, None
         if "CloudFront" in response:
             if 'X-Amz-Cf-Pop:' in response:
                 geo_code = response.split('X-Amz-Cf-Pop: ')[1][:3]

@@ -312,6 +312,7 @@ function speedRecur(list, i, resolve) {
 $("#test-speed").click(async function () {
     speedTimeout = parseInt($("#http-timeout-input").val());
     concurrency = parseInt($("#concurrency-input").val());
+    imgi = parseInt($("#img-select").val());
     var selectedRows = table.getSelectedRows();
     var sn = selectedRows.length;
 
